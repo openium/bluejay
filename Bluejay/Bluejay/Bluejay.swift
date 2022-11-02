@@ -121,6 +121,15 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
         }
     }
     
+    /// Allows checking whether Bluetooth is powered off. Also returns false if Bluejay is not started yet.
+    public var isBluetoothPoweredOff: Bool {
+        if cbCentralManager == nil {
+            return false
+        } else {
+            return cbCentralManager.state == .poweredOff
+        }
+    }
+    
     /// Allows checking whether Bluetooth is unauthorized. Also returns false if Bluejay is not started yet.
     public var isBluetoothUnauthorized: Bool {
         if cbCentralManager == nil {
