@@ -120,6 +120,15 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
             return cbCentralManager.state == .poweredOn
         }
     }
+    
+    /// Allows checking whether Bluetooth is unauthorized. Also returns false if Bluejay is not started yet.
+    public var isBluetoothUnauthorized: Bool {
+        if cbCentralManager == nil {
+            return false
+        } else {
+            return cbCentralManager.state == .unauthorized
+        }
+    }
 
     /// Allows checking for if CoreBluetooth state is transitional (update is imminent)
     /// please re-evaluate the bluetooth state again as it may change momentarily after it has returned true
