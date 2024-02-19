@@ -155,6 +155,11 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
     public var isConnected: Bool {
         return connectedPeripheral != nil
     }
+    
+    /// Allows checking Bluejay's currently connected coreBluetooth peripheral
+    public var connectedCBPeripheral: CBPeripheral? {
+        return connectedPeripheral?.cbPeripheral
+    }
 
     /// Allows checking whether Bluejay is currently disconnecting from a peripheral.
     private(set) public var isDisconnecting: Bool = false
