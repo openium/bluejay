@@ -233,12 +233,12 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
     public init(logObserver: LogObserver? = nil) {
         super.init()
 
-        // Created here, not in start(): accessors and deinit read it even if start() is never called.
-        queue = Queue(bluejay: self)
-
         if let logObserver = logObserver {
             register(logObserver: logObserver)
         }
+
+        // Created here, not in start(): accessors and deinit read it even if start() is never called.
+        queue = Queue(bluejay: self)
 
         debugLog("Bluejay initialized with UUID: \(uuid.uuidString).")
     }
@@ -319,6 +319,9 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
 
             cbCentralManager.delegate = nil
             cbCentralManager = nil
+
+            // A fresh queue waits for the next CBCentralManager to be ready, as on the first start().
+            queue = Queue(bluejay: self)
 
             debugLog("Bluejay with UUID: \(uuid.uuidString) stopped.")
         }

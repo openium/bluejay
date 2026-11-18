@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix crash when accessing `isScanning`, `stopScanning`, `disconnect` or `deinit` on a Bluejay instance that was never started
 
 ### Changed
-- An operation enqueued while the queue is being cancelled now fails immediately with `cancelled`
+- An operation enqueued while the queue is being cancelled now fails immediately with the error that triggered the cancel
 
 ## [0.8.9] - 2021-11-23
 ### Added
