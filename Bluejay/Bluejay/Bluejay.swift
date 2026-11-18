@@ -233,6 +233,9 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
     public init(logObserver: LogObserver? = nil) {
         super.init()
 
+        // Created here, not in start(): accessors and deinit read it even if start() is never called.
+        queue = Queue(bluejay: self)
+
         if let logObserver = logObserver {
             register(logObserver: logObserver)
         }
@@ -252,8 +255,6 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
         - mode: CoreBluetooth initialization modes and options.
     */
     public func start(mode: StartMode = .new(.default)) {
-        queue = Queue(bluejay: self)
-
         switch mode {
         case .new(let startOptions):
             register(connectionObserver: queue)

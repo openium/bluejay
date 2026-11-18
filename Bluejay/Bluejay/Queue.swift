@@ -33,6 +33,9 @@ class Queue {
     /// Helps determine whether CBCentralManager is being started up for the first time.
     private var isCBCentralManagerReady = false
 
+    /// True while cancelAll runs: nothing may start or be added, since cancelAll fails everything.
+    private var isCancelling = false
+
     init(bluejay: Bluejay) {
         self.bluejay = bluejay
         debugLog("Queue initialized with UUID: \(uuid.uuidString).")
@@ -51,11 +54,16 @@ class Queue {
     }
 
     func add(_ queueable: Queueable) {
+        queueable.queue = self
+
+        if isCancelling {
+            queueable.fail(BluejayError.cancelled)
+            return
+        }
+
         guard let bluejay = bluejay else {
             preconditionFailure("Cannot enqueue: Bluejay instance is nil.")
         }
-
-        queueable.queue = self
 
         if isDisconnectionQueued {
             queueable.fail(BluejayError.disconnectQueued)
@@ -109,6 +117,11 @@ class Queue {
             debugLog("Queue is empty, nothing to cancel.")
             return
         }
+
+        // cancelAll can re-enter itself through update(cancel: true): restore the outer value.
+        let wasCancelling = isCancelling
+        isCancelling = true
+        defer { isCancelling = wasCancelling }
 
         debugLog("Queue will now cancel all operations with error: \(error.localizedDescription)")
 
@@ -184,6 +197,11 @@ class Queue {
                     update()
                 }
 
+                return
+            }
+
+            // cancelAll fails every operation itself: starting one could enqueue new ones.
+            if isCancelling {
                 return
             }
 
