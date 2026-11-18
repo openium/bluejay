@@ -237,6 +237,9 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
             register(logObserver: logObserver)
         }
 
+        // Created here, not in start(): accessors and deinit read it even if start() is never called.
+        queue = Queue(bluejay: self)
+
         debugLog("Bluejay initialized with UUID: \(uuid.uuidString).")
     }
 
@@ -252,8 +255,6 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
         - mode: CoreBluetooth initialization modes and options.
     */
     public func start(mode: StartMode = .new(.default)) {
-        queue = Queue(bluejay: self)
-
         switch mode {
         case .new(let startOptions):
             register(connectionObserver: queue)
@@ -318,6 +319,9 @@ public class Bluejay: NSObject { //swiftlint:disable:this type_body_length
 
             cbCentralManager.delegate = nil
             cbCentralManager = nil
+
+            // A fresh queue waits for the next CBCentralManager to be ready, as on the first start().
+            queue = Queue(bluejay: self)
 
             debugLog("Bluejay with UUID: \(uuid.uuidString) stopped.")
         }
