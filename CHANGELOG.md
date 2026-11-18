@@ -5,7 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fix crash in `Queue.cancelAll` when operations were queued behind the running one during an immediate disconnect
+- Fix crash in `Queue.update` when a Bluejay instance was deallocated with queued operations
+- Fix crash when accessing `isScanning`, `stopScanning`, `disconnect` or `deinit` on a Bluejay instance that was never started
+
 ### Changed
+- An operation enqueued while the queue is being cancelled now fails immediately with `cancelled`
 
 ## [0.8.9] - 2021-11-23
 ### Added
